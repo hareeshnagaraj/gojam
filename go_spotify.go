@@ -1,5 +1,7 @@
 /*
 This file contains the wrapper functions for the Spotify Developer API
+The details of this process can be found at https://developer.spotify.com/web-api/authorization-guide/#authorization-code-flow
+
 */
 package gojam
 import (
@@ -42,15 +44,30 @@ func GetSpotifyAuthorizationString()string{
 }
 
 /*
+Creating the string for the refresh and access token request, which is performed after authorization
+*/
+func GetSpotifyTokenString(){
+  
+}
+
+/*
+Handling the initial authentication response
+*/
+func StoreAuthResponse(code string){
+  SetVal("spotify_code",code);
+}
+
+/*
 Parsing url and returning map of values
 */
-func ParseUrl(a string) map[string][]string{
-  values,err := url.ParseQuery(a);
+func ParseUrl(urlstring string) map[string][]string{
+  values,err := url.ParseQuery(urlstring);
   if(err != nil){
     panic("boom")
   }
   return values;
 }
+
 /*
 Print values map
 */
