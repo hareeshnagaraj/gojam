@@ -19,9 +19,17 @@ var Values = map[string]string{
   "spotify_authorize":"https://accounts.spotify.com/authorize", 
   "spotify_client_ID":"b5e44b2ab18f4f6686d0a7aefd217788",
   "spotify_client_Secret":"6ee513b2a1d8459f8d8b5ed4bb7bc305",
-  "spotify_redirect_URI":"http://localhost:8080/spotifyURI/",
+  "spotify_redirect_URI":"http://localhost:8080/spotify/URI/",
+  "spotify_code":"blank",
 }
 
 func GetConstants() map[string]string{
   return Values;
 };
+
+/*
+Set the value of something in the Values map
+*/
+func SetVal(key string, val string){
+  Values[key] = val;
+}

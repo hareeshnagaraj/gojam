@@ -31,7 +31,7 @@ func GetSpotifyAuthorizationString()string{
   Url, err := url.Parse(Constants["spotify_authorize"])
   if err != nil {
       panic("boom")
-  }
+  };
   parameters := url.Values{}
   parameters.Add("client_id",Constants["spotify_client_ID"]);
   parameters.Add("redirect_uri",Constants["spotify_redirect_URI"]);
@@ -39,4 +39,23 @@ func GetSpotifyAuthorizationString()string{
   Url.RawQuery = parameters.Encode()
   fmt.Printf("Encoded URL is %q\n", Url.String())
   return Url.String();
+}
+
+/*
+Parsing url and returning map of values
+*/
+func ParseUrl(a string) map[string][]string{
+  values,err := url.ParseQuery(a);
+  if(err != nil){
+    panic("boom")
+  }
+  return values;
+}
+/*
+Print values map
+*/
+func PrintValues(w http.ResponseWriter, values map[string][]string){
+   for i, n := range values{
+      fmt.Fprintf(w,"%s:%s\n", i, n)
+    }
 }
