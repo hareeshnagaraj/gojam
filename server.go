@@ -18,10 +18,13 @@ func spotifyAuthorizationHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 /*
-Handling the response tokens from spotify's redirect
+Handling the response code from spotify's redirect
+StoreAuthResponse stores the code in our Values map
+
 */
 func spotifyURIHandler(w http.ResponseWriter, r *http.Request) {  
     vals := ParseUrl(r.URL.String())
     StoreAuthResponse(vals["/spotify/URI/?code"][0]);
+    SpotifyTokenRequest(w,r);            //requesting the refresh and access tokesn
     fmt.Fprintf(w, "spotifyURIHandler_code %v\n\n",Values["spotify_code"])
 }

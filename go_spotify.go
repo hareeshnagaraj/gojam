@@ -8,6 +8,9 @@ import (
   "fmt"
   "net/http"
   "net/url"
+  "bytes"
+  // "appengine/urlfetch"
+  // "strconv"
   // "io/ioutil"
 )
 var Constants = GetConstants();     //getting the object that contains our secret keys        
@@ -21,9 +24,34 @@ Establishing our connection with spotify and retrieving an authorization token
 */
 func SpotifyAuthorizationRedirect(w http.ResponseWriter, r *http.Request){         //making the spotify api calls
   authString := GetSpotifyAuthorizationString();
-  fmt.Println(authString);  
   http.Redirect(w, r, authString, http.StatusMovedPermanently);
 }
+/*
+Retrieving the refresh and access tokens from the Spotify API
+*/
+func SpotifyTokenRequest(w http.ResponseWriter,r *http.Request){
+  tokenString := Values["spotify_token"];
+  data := url.Values{}
+  data.Add("grant_type","authorization_code");
+  data.Add("client_secret",Values["spotify_client_secret"]);
+  data.Add("client_id",Values["spotify_client_ID"]);  
+  data.Add("redirect_uri",Values["spotify_redirect_URI"]);
+  data.Add("code",Values["spotify_code"]);
+
+  fmt.Fprintf(w, "spotifyToken url  %v\n\n",tokenString);
+
+  client := &http.Client{};
+  req, err := http.NewRequest("POST", tokenString, bytes.NewBufferString(data.Encode())); // <-- URL-encoded payload
+  req.Close = true;     
+  resp, err := client.Do(req);
+  if err != nil {
+      fmt.Fprintf(w, "error ",err);
+      // panic("boom2")
+  }else{
+      defer resp.Body.Close(); 
+  }
+}
+
 
 /*
   Creating the authorization string
@@ -39,15 +67,7 @@ func GetSpotifyAuthorizationString()string{
   parameters.Add("redirect_uri",Constants["spotify_redirect_URI"]);
   parameters.Add("response_type","code");
   Url.RawQuery = parameters.Encode()
-  fmt.Printf("Encoded URL is %q\n", Url.String())
   return Url.String();
-}
-
-/*
-Creating the string for the refresh and access token request, which is performed after authorization
-*/
-func GetSpotifyTokenString(){
-  
 }
 
 /*
